@@ -47,7 +47,7 @@ function App() {
 
       const loader = new GLTFLoader();
       loader.load(
-        'src/assets/shiba/scene.gltf',
+        'assets/shiba/scene.gltf',
         function (gltf) {
           const model = gltf.scene;
           scene.add(model);
