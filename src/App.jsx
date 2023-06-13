@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
+import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js';
 
 function App() {
   const containerRef = useRef(null);
@@ -30,7 +31,6 @@ function App() {
       
         renderer.setSize(window.innerWidth, window.innerHeight);
       }
-      
 
       const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
       light.position.set(0.5, 1, 0.25);
@@ -45,16 +45,30 @@ function App() {
       vrButton = VRButton.createButton(renderer);
       document.body.appendChild(vrButton);
 
-      const loader = new GLTFLoader();
-      loader.load(
-        'assets/shiba/scene.gltf',
-        function (gltf) {
-          const model = gltf.scene;
-          scene.add(model);
+      const mtlLoader = new MTLLoader();
+      mtlLoader.load(
+        'src/assets/poly/poly.mtl',
+        function (materials) {
+          materials.preload();
+
+          const objLoader = new OBJLoader();
+          objLoader.setMaterials(materials);
+          objLoader.load(
+            'src/assets/poly/poly.obj',
+            function (object) {
+              object.scale.set(15,15,15)
+              object.position.z = -8;
+              scene.add(object);
+            },
+            undefined,
+            function (error) {
+              console.error('Error al cargar el archivo OBJ', error);
+            }
+          );
         },
         undefined,
         function (error) {
-          console.error('Error al cargar el modelo glTF', error);
+          console.error('Error al cargar el archivo MTL', error);
         }
       );
 
@@ -76,8 +90,10 @@ function App() {
       renderer.render(scene, camera);
     }
 
-    init();
-    animate();
+
+      init();
+      animate();
+    
 
     return () => {
       renderer.dispose();
