@@ -47,14 +47,14 @@ function App() {
 
       const mtlLoader = new MTLLoader();
       mtlLoader.load(
-        'src/assets/poly/poly.mtl',
+        'assets/poly/poly.mtl',
         function (materials) {
           materials.preload();
 
           const objLoader = new OBJLoader();
           objLoader.setMaterials(materials);
           objLoader.load(
-            'src/assets/poly/poly.obj',
+            'assets/poly/poly.obj',
             function (object) {
               object.scale.set(15,15,15)
               object.position.z = -8;
