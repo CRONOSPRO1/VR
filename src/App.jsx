@@ -53,14 +53,19 @@ function App() {
 
           const objLoader = new OBJLoader();
           objLoader.setMaterials(materials);
+
+          // Manejar el progreso de carga
           objLoader.load(
             'assets/poly/poly.obj',
             function (object) {
-              object.scale.set(15,15,15)
+              object.scale.set(15, 15, 15);
               object.position.z = -8;
               scene.add(object);
             },
-            undefined,
+            function (xhr) {
+              const progress = xhr.loaded / xhr.total;
+              alert(`Carga: ${Math.round(progress * 100)}%`);
+            },
             function (error) {
               console.error('Error al cargar el archivo OBJ', error);
             }
@@ -91,9 +96,8 @@ function App() {
     }
 
 
-      init();
-      animate();
-    
+    init();
+    animate();
 
     return () => {
       renderer.dispose();
